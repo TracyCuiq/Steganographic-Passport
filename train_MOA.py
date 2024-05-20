@@ -76,19 +76,19 @@ def main():
     datetime_string = current_datetime.strftime('%Y-%m-%d %H:%M')
     date = str(datetime_string)
     
-    # wandb.init(
-    #     project="MOA",
-    #     name=expname,
-    #     # track hyperparameters and run metadata
-    #     config={
-    #     "learning_rate": exp.lr,
-    #     "architecture": exp.arch,
-    #     "dataset": exp.dataset,
-    #     "epochs": exp.epochs//1,
-    #     "date": date,
-    #     "norm_type": exp.norm_type,
-    #     }
-    # )
+    wandb.init(
+        project="MOA",
+        name=expname,
+        # track hyperparameters and run metadata
+        config={
+        "learning_rate": exp.lr,
+        "architecture": exp.arch,
+        "dataset": exp.dataset,
+        "epochs": exp.epochs//1,
+        "date": date,
+        "norm_type": exp.norm_type,
+        }
+    )
 
     if exp.is_tl:
         exp.transfer_learning()
