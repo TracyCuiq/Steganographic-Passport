@@ -25,6 +25,17 @@ from amb_attack_moa import test_fake
 import torch.nn.functional as F
 import json
 
+def clip_hw_to_even(tensor):
+    # 获取tensor的高度和宽度
+    H, W = tensor.shape[-2], tensor.shape[-1]
+    
+    # 计算偶数的高度和宽度
+    even_H = H if H % 2 == 0 else H - 1
+    even_W = W if W % 2 == 0 else W - 1
+    
+    # 使用切片来裁剪tensor
+    return tensor[..., :even_H, :even_W]
+
 class CustomImageDataset(torch.utils.data.Dataset):
     def __init__(self, root_dir, transform=None):
         self.root_dir = root_dir
@@ -265,6 +276,7 @@ class INNExperiment(object):
         token_image_ts = self.fake_token_image#
         count = 0
         for data in self.eval_data:
+            #data = clip_hw_to_even(data.to(self.device))
             data = data.to(self.device)
             #fake_key = fake_key.to(self.device)
             with torch.no_grad():
@@ -379,8 +391,10 @@ class INNExperiment(object):
         fake_loader = self.prepare_eval_dataset(bz=1, path=self.fake_secret_path)
         fake_data_iter = iter(fake_loader)
         
+        #token_image_ts = self.fake_token_image#
         count = 0
         for data in self.eval_data:
+            #data = clip_hw_to_even(data.to(self.device))
             if count == 4: # Specifying passport
                 data = data.to(self.device)
                 for fake in fake_loader:
@@ -420,14 +434,32 @@ class INNExperiment(object):
                         secret_rev__ = output_image.narrow(1, 4 * 3, output_image.shape[1] - 4 * 3)
                         secret_rev_noise = iwt(secret_rev__)
 
+                        # g_loss = guide_loss(steg, cover)
+                        # r_loss = reconstruction_loss(secret_rev, secret) #+ reconstruction_loss(cover_rev, images)
+                        # z_loss = reconstruction_loss(output_z_iwt, token_image_ts)
+
+                        #cover_ = cover.clamp(min=0, max=1)
+                        #steg_ = steg.clamp(min=0, max=1)
+                        #output_z_iwt_ = output_z_iwt.clamp(min=0, max=1)
+                        #token_image_ts_ = token_image_ts.clamp(min=0, max=1)
                         secret_rev_random_ = secret_rev_random.clamp(min=0, max=1)
                         secret_rev_noise_ = secret_rev_noise.clamp(min=0, max=1)
                         secret_ = secret.clamp(min=0, max=1)
+
+                        #psnr_g = psnr_com(cover_, steg_)
+                        #psnr_z = psnr_com(output_z_iwt_, token_image_ts_)
                         psnr_s_random = psnr_com(secret_rev_random_, secret_)
                         psnr_s_noise = psnr_com(secret_rev_noise_, secret_)
 
+                    #psnr_gen.update(psnr_g, 1)
+                    # psnr_res.update(psnr_s, 1)
+                    # psnr_rez.update(psnr_z, 1)
                     psnr_res_fake_random.update(psnr_s_random, 1)
                     psnr_res_fake_noise.update(psnr_s_noise, 1)
+
+                    # g_loss_sum.update(g_loss, len(cover_))
+                    # r_loss_sum.update(r_loss, len(cover_))
+                    # z_loss_sum.update(z_loss, len(cover_))
 
                     print(psnr_s_noise.item(), file=lf_r_fake_noise)
                     lf_r_fake_noise.flush()
@@ -447,7 +479,7 @@ class INNExperiment(object):
         self.sl_ratio = None
         passport_kwargs = construct_passport_kwargs(self)
         model = ResNet18Private(num_classes=10, passport_kwargs=passport_kwargs)
-        sd = torch.load('./log/resnet_cifar10_v2_all-our4/25/models/best.pth')
+        sd = torch.load('/home/ruohan/MOA_copy/log/resnet_cifar10_v2_all-our4/25/models/best.pth')
         model.load_state_dict(sd)
         model.eval()
         cifar10_loader = prepare_test_CIFAR10()
@@ -527,10 +559,18 @@ class INNExperiment(object):
             print('psnr_g', psnr_g.item(), ' ', 'psnr_s', psnr_s.item())
             self.psnr_att_passport_gen_dict[count] = psnr_att_passport_gen_list
             self.psnr_att_passport_res_dict[count] = psnr_att_passport_res_list
+            #self.psnr_att_passport_gen_list.append(psnr_g.item())
 
-            with open('./log/attacks/att_amb_passport_psnr_gen_dict.json', 'w') as json_file:
+            # print(psnr_g.item(), file=lf_g)
+            # lf_g.flush()
+            # print(psnr_s.item(), file=lf_s)
+            # lf_s.flush()
+            #self.psnr_att_passport_gen_list.append(psnr_g.item())
+            #self.psnr_att_passport_res_list.append(psnr_s.item())
+
+            with open('/home/ruohan/MOA_copy/log/attacks/att_amb_passport_psnr_gen_dict.json', 'w') as json_file:
                 json.dump(self.psnr_att_passport_gen_dict, json_file)
-            with open('./log/attacks/att_amb_passport_psnr_res_dict.json', 'w') as json_file:
+            with open('/home/ruohan/MOA_copy/log/attacks/att_amb_passport_psnr_res_dict.json', 'w') as json_file:
                 json.dump(self.psnr_att_passport_res_dict, json_file)
             count += 1
             if count > 99:

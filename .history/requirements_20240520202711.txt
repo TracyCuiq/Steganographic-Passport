@@ -1,0 +1,7 @@
+torchvision
+numpy
+Pillow
+matplotlib
+tqdm
+wandb
+piqa

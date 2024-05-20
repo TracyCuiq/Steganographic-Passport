@@ -425,9 +425,12 @@ class INNExperiment(object):
                         secret_ = secret.clamp(min=0, max=1)
                         psnr_s_random = psnr_com(secret_rev_random_, secret_)
                         psnr_s_noise = psnr_com(secret_rev_noise_, secret_)
-
                     psnr_res_fake_random.update(psnr_s_random, 1)
                     psnr_res_fake_noise.update(psnr_s_noise, 1)
+
+                    # g_loss_sum.update(g_loss, len(cover_))
+                    # r_loss_sum.update(r_loss, len(cover_))
+                    # z_loss_sum.update(z_loss, len(cover_))
 
                     print(psnr_s_noise.item(), file=lf_r_fake_noise)
                     lf_r_fake_noise.flush()

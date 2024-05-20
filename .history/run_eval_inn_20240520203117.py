@@ -379,8 +379,10 @@ class INNExperiment(object):
         fake_loader = self.prepare_eval_dataset(bz=1, path=self.fake_secret_path)
         fake_data_iter = iter(fake_loader)
         
+        #token_image_ts = self.fake_token_image#
         count = 0
         for data in self.eval_data:
+            #data = clip_hw_to_even(data.to(self.device))
             if count == 4: # Specifying passport
                 data = data.to(self.device)
                 for fake in fake_loader:
@@ -420,14 +422,32 @@ class INNExperiment(object):
                         secret_rev__ = output_image.narrow(1, 4 * 3, output_image.shape[1] - 4 * 3)
                         secret_rev_noise = iwt(secret_rev__)
 
+                        # g_loss = guide_loss(steg, cover)
+                        # r_loss = reconstruction_loss(secret_rev, secret) #+ reconstruction_loss(cover_rev, images)
+                        # z_loss = reconstruction_loss(output_z_iwt, token_image_ts)
+
+                        #cover_ = cover.clamp(min=0, max=1)
+                        #steg_ = steg.clamp(min=0, max=1)
+                        #output_z_iwt_ = output_z_iwt.clamp(min=0, max=1)
+                        #token_image_ts_ = token_image_ts.clamp(min=0, max=1)
                         secret_rev_random_ = secret_rev_random.clamp(min=0, max=1)
                         secret_rev_noise_ = secret_rev_noise.clamp(min=0, max=1)
                         secret_ = secret.clamp(min=0, max=1)
+
+                        #psnr_g = psnr_com(cover_, steg_)
+                        #psnr_z = psnr_com(output_z_iwt_, token_image_ts_)
                         psnr_s_random = psnr_com(secret_rev_random_, secret_)
                         psnr_s_noise = psnr_com(secret_rev_noise_, secret_)
 
+                    #psnr_gen.update(psnr_g, 1)
+                    # psnr_res.update(psnr_s, 1)
+                    # psnr_rez.update(psnr_z, 1)
                     psnr_res_fake_random.update(psnr_s_random, 1)
                     psnr_res_fake_noise.update(psnr_s_noise, 1)
+
+                    # g_loss_sum.update(g_loss, len(cover_))
+                    # r_loss_sum.update(r_loss, len(cover_))
+                    # z_loss_sum.update(z_loss, len(cover_))
 
                     print(psnr_s_noise.item(), file=lf_r_fake_noise)
                     lf_r_fake_noise.flush()
