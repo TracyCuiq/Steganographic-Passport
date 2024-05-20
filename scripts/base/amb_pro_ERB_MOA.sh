@@ -1,0 +1,15 @@
+CUDA_VISIBLE_DEVICES=$1 python run_amb_attack_moa.py \
+    --epochs 100 \
+    --batch-size 64 \
+    --trigger-path '/home/ruohan/MOA_lab2/data/trigger_set/pics' \
+    --emb-path '/home/ruohan/MOA_lab2/data/trigger_set/emb_pics' \
+    --key-type 'image' \
+    --train-private \
+    --use-trigger-as-passport \
+    --arch $2 \
+    --dataset $3 \
+    --norm-type $4\
+    --passport-config $5 \
+    --exp-id $6 \
+    --type $7 \
+    --pro-att $8\

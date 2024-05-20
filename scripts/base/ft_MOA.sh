@@ -1,0 +1,16 @@
+CUDA_VISIBLE_DEVICES=$1 python train_MOA.py \
+    -tf \
+    --epochs 100 \
+    --batch-size 64 \
+    --lr 0.001 \
+    --trigger-path 'data/trigger_set/pics' \
+    --emb-path 'data/trigger_set/emb_pics' \
+    --key-type 'image' \
+    --train-private \
+    --use-trigger-as-passport \
+    --arch $2 \
+    --dataset $3 \
+    --tl-dataset $4 \
+    --norm-type $5\
+    --passport-config $6 \
+    --exp-id $7 \
