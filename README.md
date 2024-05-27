@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 - [CIFAR-10, CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html), [Caltech-101](https://data.caltech.edu/records/mzrjq-6wc02), and [Caltech-256](https://data.caltech.edu/records/nyy15-4j048) are used in the classification experiments.
 
-- [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) is used to train the key-based ([ISN](https://openaccess.thecvf.com/content/CVPR2021/papers/Lu_Large-Capacity_Image_Steganography_Based_on_Invertible_Neural_Networks_CVPR_2021_paper.pdf)).
+- [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) is used to train the key-based [ISN](https://openaccess.thecvf.com/content/CVPR2021/papers/Lu_Large-Capacity_Image_Steganography_Based_on_Invertible_Neural_Networks_CVPR_2021_paper.pdf).
 
 - For passport images, we randomly select them from the test set of [COCO dataset](https://cocodataset.org/#home).
 
