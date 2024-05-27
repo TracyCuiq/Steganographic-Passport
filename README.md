@@ -6,7 +6,7 @@ Authors: [Qi Cui](https://tracycuiq.github.io/), Ruohan Meng, Chaohui Xu, Chip-H
 
 ## Introduction
 
-Steganographic Passport uses an invertible steganographic network to decouple license-to-use from ownership verification by hiding the user’s identity images into the owner-side passport and recovering them from their respective user-side passports. 
+Steganographic Passport uses an invertible steganographic network (ISN) to decouple license-to-use from ownership verification by hiding the user’s identity images into the owner-side passport and recovering them from their respective user-side passports. 
 An irreversible and collision-resistant hash function is used to avoid exposing the owner-side passport from the derived user-side passports and increase the uniqueness of the model signature. To safeguard both the passport and model’s weights against advanced ambiguity attacks, an activation-level obfuscation is proposed for the verification branch of the owner’s model. 
 By jointly training the verification and deployment branches, their weights become tightly coupled. The proposed method supports agile licensing of deep models by providing a strong ownership proof and license accountability without requiring a separate model retraining for the admission of every new user. 
 
@@ -39,7 +39,7 @@ pip install -r requirements.txt
 
 - [CIFAR-10, CIFAR-100](https://www.cs.toronto.edu/~kriz/cifar.html), [Caltech-101](https://data.caltech.edu/records/mzrjq-6wc02), and [Caltech-256](https://data.caltech.edu/records/nyy15-4j048) are used in the classification experiments.
 
-- [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) is used to train the key-based ISN.
+- [DIV2K](https://data.vision.ee.ethz.ch/cvl/DIV2K/) is used to train the key-based ([ISN](https://openaccess.thecvf.com/content/CVPR2021/papers/Lu_Large-Capacity_Image_Steganography_Based_on_Invertible_Neural_Networks_CVPR_2021_paper.pdf)).
 
 - For passport images, we randomly select them from the test set of [COCO dataset](https://cocodataset.org/#home).
 
